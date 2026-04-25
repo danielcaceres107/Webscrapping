@@ -28,13 +28,37 @@ html = driver.page_source
 # BeautifulSoup para analizar el HTML
 soup = BeautifulSoup(html, "html.parser")
 
-# Encontrar Card con informacion
-cards = soup.find_all("div", class_="flex flex-1 flex-col py-2")
+def extraer_pisos(html):
+    soup = BeautifulSoup(html, "html.parser")
+    resultados = []
 
-for card in cards:
-    precio = card.find("p").get_text(strip=True)
-    descripcion = card.find("h3").get_text(strip=True)
+    cards = soup.find_all("div", class_="flex flex-1 flex-col py-2")
 
-    print("Precio:", precio)
-    print("Texto:", descripcion)
-    print("-" * 30)
+    for card in cards:
+        precio = card.find("p").get_text(strip=True)
+        descripcion = card.find("h3").get_text(strip=True)
+
+        resultados.append((precio, descripcion))
+
+    return resultados
+
+# página 1 (la inicial)
+html = driver.page_source
+pisos = extraer_pisos(html)
+
+for precio, descripcion in pisos:
+    print("[Página 1]", precio, "-", descripcion)
+
+
+# páginas 2 a 5
+for i in range(2, 6):
+    boton = driver.find_element(By.XPATH, f"//button[text()='{i}']")
+    boton.click()
+    
+    time.sleep(3)
+
+    html = driver.page_source
+    pisos = extraer_pisos(html)
+
+    for precio, descripcion in pisos:
+        print(f"[Página {i}]", precio, "-", descripcion)
