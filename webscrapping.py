@@ -1,6 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 import time
 
@@ -43,6 +45,16 @@ def extraer_pisos(html):
     return resultados
 
 # página 1 (la inicial)
+wait = WebDriverWait(driver, 10)
+
+# Click en checkbox "Piso"
+wait.until(
+    EC.element_to_be_clickable((By.XPATH, "//label[.//span[text()='Piso']]"))
+).click()
+
+time.sleep(3)
+
+
 html = driver.page_source
 pisos = extraer_pisos(html)
 
@@ -50,8 +62,8 @@ for precio, descripcion in pisos:
     print("[Página 1]", precio, "-", descripcion)
 
 
-# páginas 2 a 5
-for i in range(2, 6):
+# páginas 2 a 92
+for i in range(2, 92):
     boton = driver.find_element(By.XPATH, f"//button[text()='{i}']")
     boton.click()
     
