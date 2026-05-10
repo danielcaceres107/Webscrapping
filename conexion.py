@@ -1,18 +1,18 @@
-## en este script se hace la conexion a PostegreSQL
-
-import pymysql
-from pymysql import MySQLError
-from dotenv import load_dotenv
 import os
 
-load_dotenv() 
+import pymysql
+from dotenv import load_dotenv
+from pymysql import MySQLError
 
-# Datos de conexión
+
+load_dotenv()
+
 host = os.getenv("MYSQL_HOST")
 port = int(os.getenv("MYSQL_PORT"))
 user = os.getenv("MYSQL_USER")
 password = os.getenv("MYSQL_PASSWORD")
 database = os.getenv("MYSQL_DATABASE")
+
 
 def laConexion():
     try:
@@ -25,20 +25,22 @@ def laConexion():
             autocommit=True,
             charset="utf8mb4",
             cursorclass=pymysql.cursors.Cursor,
-            ssl={"ca": "ca.pem"}
+            ssl={"ca": "ca.pem"},
         )
-        
-        print("✅ Conexión a la base de datos realizada correctamente.")
+
+        print("Conexion a la base de datos realizada correctamente.")
         return conexion
     except MySQLError as e:
-        print("❌ Error al conectar con la base de datos.")
+        print("Error al conectar con la base de datos.")
         print(f"Detalle del error: {e}")
         return None
 
-conexion = laConexion()
 
-if conexion:
-    print("Puedes continuar con las operaciones en la base de datos.")
-    conexion.close()
-else:
-    print("No se puede continuar sin conexión.")
+if __name__ == "__main__":
+    conexion = laConexion()
+
+    if conexion:
+        print("Puedes continuar con las operaciones en la base de datos.")
+        conexion.close()
+    else:
+        print("No se puede continuar sin conexion.")
